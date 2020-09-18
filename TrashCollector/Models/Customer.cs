@@ -21,11 +21,6 @@ namespace TrashCollector.Models
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
 
-        public Customer()
-        {
-            var userId = this.IdentityUser.FindFirstValue(ClaimTypes.NameIdentifier);
-            customer.IdentitiyUserId
-        }
 
     }
 }
