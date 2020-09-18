@@ -16,25 +16,25 @@ namespace TrashCollector.ActionFilters
             _claimsPrincipal = claimsPrincipal;
         }
 
-        public void OnActionExecuting(ActionExecutedContext context)
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+           
+        }
+
+        public void OnActionExecuting(ActionExecutingContext context)
         {
             var controller = context.RouteData.Values["controller"];
             if (controller.Equals("Home"))
             {
                 if (_claimsPrincipal.IsInRole("Customer"))
                 {
-                    context.Result = new RedirectToActionResult("Index", "Customers", null);
+                    context.Result = new RedirectToActionResult("Index", "Customer", null);
                 }
                 else if (_claimsPrincipal.IsInRole("Employee"))
                 {
-                    context.Result = new RedirectToActionResult("Index", "Employees", null);
+                    context.Result = new RedirectToActionResult("Index", "Employee", null);
                 }
             }
-        }
-
-        public void OnActionExecuted(ActionExecutedContext)
-        {
-
         }
     }
 }

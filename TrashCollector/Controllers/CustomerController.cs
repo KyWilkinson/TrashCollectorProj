@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TrashCollector.Data;
 using TrashCollector.Models;
 
 namespace TrashCollector.Controllers
@@ -12,10 +14,22 @@ namespace TrashCollector.Controllers
     [Authorize(Roles = "Customer")]
     public class CustomerController : Controller
     {
+        private ApplicationDbContext _context;
+
+        public CustomerController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         // GET: CustomerController
         public ActionResult Index()
         {
-            return View();
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = _context.Customer.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            if(customer == null)
+            {
+                return RedirectToAction(nameof(Create));
+            }
+            return View(customer);
         }
 
         // GET: CustomerController/Details/5
@@ -33,10 +47,14 @@ namespace TrashCollector.Controllers
         // POST: CustomerController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Customer customer)
         {
             try
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                customer.IdentityUserId = userId;
+                _context.Add(customer);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
