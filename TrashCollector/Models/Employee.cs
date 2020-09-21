@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using TrashCollector.Data.Migrations;
 
 namespace TrashCollector.Models
 {
@@ -11,5 +12,7 @@ namespace TrashCollector.Models
         [Key]
         public int employeeId { get; set; }
         public double zipCode { get; set; }
+        
+
     }
 }
